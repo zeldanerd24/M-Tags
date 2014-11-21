@@ -11,12 +11,21 @@ import android.nfc.Tag;
 import android.nfc.tech.Ndef;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.webkit.WebView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.kevinrothenberger.m_tags.utils.API;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
@@ -27,26 +36,22 @@ public class ReaderActivity extends Activity {
     public static final String MIME_TEXT_PLAIN = "text/plain";
     private static final String TAG = "NfcDemo";
 
-    private TextView textView;
     private NfcAdapter nfcAdapter;
+    private WebView webView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reader);
-        textView = (TextView) findViewById(R.id.test_text);
+        webView = (WebView) findViewById(R.id.webView);
+
+        webView.getSettings().setJavaScriptEnabled(true);
 
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
 
         if(nfcAdapter == null) {
             Toast.makeText(this, "This device doesn't support NFC.", Toast.LENGTH_LONG).show();
             finish();
-        }
-
-        if(!nfcAdapter.isEnabled()) {
-            textView.setText("NFC is disabled");
-        } else {
-            textView.setText(R.string.explanation);
         }
 
         handleIntent(getIntent());
@@ -201,9 +206,52 @@ public class ReaderActivity extends Activity {
         @Override
         protected void onPostExecute(String result) {
             if (result != null) {
-                textView.setText("Read content: " + result);
+                //textView.setText("Read content: " + result);
+
+                getItem(Integer.valueOf(result));
             }
         }
     }
+
+    private void getItem(final int itemId) {
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject items = API.getItemById(ReaderActivity.this, itemId);
+
+                    Message message = Message.obtain();
+                    message.obj = items;
+
+                    itemStreamHandler.sendMessage(message);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        thread.start();
+    }
+
+    Handler itemStreamHandler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+
+            JSONObject item = (JSONObject) msg.obj;
+
+            if(item != null) {
+
+                try {
+                    webView.loadUrl(item.getString("Item_URL"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            return false;
+        }
+    });
 
 }

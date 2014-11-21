@@ -8,6 +8,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -68,6 +69,14 @@ public class API {
         }
 
         return null;
+
+    }
+
+    public static JSONObject getItemById(Context context, int itemId) throws Exception {
+
+        String responseJSON = callAPI(context, "getItem.php?id=" + itemId);
+
+        return new JSONObject(new JSONArray(responseJSON).get(0).toString());
 
     }
 
