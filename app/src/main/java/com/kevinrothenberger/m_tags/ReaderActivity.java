@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
+import android.nfc.NfcManager;
 import android.nfc.Tag;
 import android.nfc.tech.Ndef;
 import android.os.AsyncTask;
@@ -17,6 +18,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.webkit.WebView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +32,8 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
+import static android.view.View.GONE;
+
 
 public class ReaderActivity extends Activity {
 
@@ -38,6 +42,7 @@ public class ReaderActivity extends Activity {
 
     private NfcAdapter nfcAdapter;
     private WebView webView;
+    private TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,15 +51,22 @@ public class ReaderActivity extends Activity {
         webView = (WebView) findViewById(R.id.webView);
 
         webView.getSettings().setJavaScriptEnabled(true);
-
+        textView = (TextView) findViewById(R.id.textView);
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
 
         if(nfcAdapter == null) {
             Toast.makeText(this, "This device doesn't support NFC.", Toast.LENGTH_LONG).show();
             finish();
         }
+        if(!(nfcAdapter.isEnabled())){
+            Toast.makeText(this, "Please enable NFC", Toast.LENGTH_LONG).show();
+
+        }
+
+
 
         handleIntent(getIntent());
+        //textView.setVisibility(GONE);
     }
 
     @Override
@@ -72,6 +84,7 @@ public class ReaderActivity extends Activity {
     @Override
     protected void onNewIntent(Intent intent) {
         handleIntent(intent);
+
     }
 
     @Override
@@ -96,7 +109,7 @@ public class ReaderActivity extends Activity {
     private void handleIntent(Intent intent) {
         String action = intent.getAction();
         if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)) {
-
+            textView.setVisibility(GONE);
             String type = intent.getType();
             if (MIME_TEXT_PLAIN.equals(type)) {
 
@@ -109,6 +122,7 @@ public class ReaderActivity extends Activity {
         } else if (NfcAdapter.ACTION_TECH_DISCOVERED.equals(action)) {
 
             // In case we would still use the Tech Discovered Intent
+
             Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
             String[] techList = tag.getTechList();
             String searchedTech = Ndef.class.getName();
