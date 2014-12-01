@@ -7,20 +7,12 @@
         android:targetSdkVersion="20" />
 
     <uses-permission android:name="android.permission.NFC" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
 
     <uses-feature
         android:name="android.hardware.nfc"
         android:required="true" />
-
-    <android:uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="18" />
-    <android:uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <android:uses-permission
-        android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="18" />
 
     <application
         android:allowBackup="true"
@@ -28,7 +20,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.kevinrothenberger.m_tags.ReaderActivity"
+            android:name=".ReaderActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -51,10 +43,10 @@
                 android:resource="@xml/nfc_tech_filter" />
         </activity>
         <activity
-            android:name="com.kevinrothenberger.m_tags.WriterActivity"
+            android:name=".WriterActivity"
             android:label="@string/title_activity_writer"
-            android:parentActivityName="com.kevinrothenberger.m_tags.ReaderActivity" >
 
+            android:parentActivityName="com.kevinrothenberger.m_tags.ReaderActivity" >
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
