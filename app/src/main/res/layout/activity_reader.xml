@@ -12,6 +12,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/webView"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/reader_text"
+        android:id="@+id/textView"
+        android:layout_below="@+id/webView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="93dp" />
 </RelativeLayout>

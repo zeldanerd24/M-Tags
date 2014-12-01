@@ -9,5 +9,6 @@
     <string name="writeButton">Write NFC</string>
     <string name="title_activity_writer">WriterActivity</string>
     <string name="add_nfc">Add tag</string>
+    <string name="reader_text">Hold device up to NFC tag</string>
 
 </resources>
